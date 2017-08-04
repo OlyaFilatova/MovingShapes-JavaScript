@@ -4,6 +4,10 @@ There is a canvas that is stretched to entire screen and is filled with differen
 
 Shapes are moving, rotating, bumping into each other, and changing angle of their movement and rotation.
 
+
+![Screenshot](docs/screenshot.png)
+
+
 Collisions are detected using SAT.
 
 Look for reference:

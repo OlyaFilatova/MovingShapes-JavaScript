@@ -24,6 +24,53 @@ var Animation = new function(){
 	var colorsArray = [];
 	// reference to interval of the animation
 	var movingInterval = null;
+	// show static shapes
+	var showStaticShapes = false;
+	// show moving shapes
+	var showMovingShapes = true;
+	// show circles
+	var showCircles = true;
+	// show rectangles
+	var showRectangles = true;
+	// show triangles
+	var showTriangles = true;
+	
+	/**
+	* sets whether to show static shapes
+	* @param {Boolean} show - 
+	*/
+	this.setShowStaticShapes = function(show){
+		showStaticShapes = show;
+	};
+	/**
+	* sets whether to show moving shapes
+	* @param {Boolean} show - 
+	*/
+	this.setShowMovingShapes = function(show){
+		showMovingShapes = show;
+	};
+	/**
+	* sets whether to show circles
+	* @param {Boolean} show - 
+	*/
+	this.setShowCircles = function(show){
+		showCircles = show;
+	};
+	/**
+	* sets whether to show rectangles
+	* @param {Boolean} show - 
+	*/
+	this.setShowRectangles = function(show){
+		showRectangles = show;
+	};
+	/**
+	* sets whether to show triangles
+	* @param {Boolean} show - 
+	*/
+	this.setShowTriangles = function(show){
+		showTriangles = show;
+	};
+	
 	/**
 	* sets width and height of the canvas and global variables
 	*/
@@ -47,23 +94,26 @@ var Animation = new function(){
 		
 		var rand;
 		var shape;
-		for(var i = 1; i < 5; i++){//canvasWidth/cellWidth - 1
-			for(var j = 1; j < 5; j++){//canvasHeight/cellHeight - 1
+		for(var i = 1; i < canvasWidth/cellWidth - 1; i++){
+			for(var j = 1; j < canvasHeight/cellHeight - 1; j++){
+				shape = null;
 				rand = parseInt(Math.random()*10);
 				
-				if(rand%3 == 1){
+				if(rand%3 == 1 && showCircles){
 					shape = new Circle(i*cellWidth,j*cellHeight, colorsArray[(i+j + parseInt(Math.random()*10))%colorsRange], 20);
-				}else if(rand%3 == 2){
+				}else if(rand%3 == 2 && showRectangles){
 					shape = new Rectangle(i*cellWidth,j*cellHeight, colorsArray[(i+j + parseInt(Math.random()*10))%colorsRange], 50, 50);
-				}else{
+				}else if(showTriangles){
 					shape = new Triangle(colorsArray[(i+j + parseInt(Math.random()*10))%colorsRange], i*cellWidth + 30, j*cellHeight+ 30);
 				}
 				
-				rand = parseInt(Math.random()*10);
-				if(rand%3 == 1){
-					movingShapes.push(shape);
-				}else{
-					staticShapes.push(shape);
+				if(shape != null){
+					rand = parseInt(Math.random()*10);
+					if(rand%3 == 1 && showMovingShapes){
+						movingShapes.push(shape);
+					}else if(showStaticShapes){
+						staticShapes.push(shape);
+					}
 				}
 			}
 		}

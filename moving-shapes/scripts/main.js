@@ -4,6 +4,11 @@ Animation.setCanvasSettings("#F1F8E9");
 Animation.setColorsArray(["#EF6C00", "#2E7D32", "#0277BD"]);
 // set size of the frame in milliseconds
 Animation.setFrameSize(15);
+Animation.setShowMovingShapes(true);
+Animation.setShowStaticShapes(true);
+Animation.setShowTriangles(false);
+Animation.setShowRectangles(false);
+Animation.setShowCircles(true);
 // start moving shapes
 Animation.startMoving();
 window.onresize = function(){

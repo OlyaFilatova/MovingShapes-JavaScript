@@ -24,17 +24,60 @@ Shape.prototype = {
 	// Bottom side of the canvas
 	BOTTOM: 3,
 	
-	// interface method
+	/**
+	 * @abstract
+	 * Make a step
+	 */
 	makeAStep: function(){
-		console.log("Class that inherited from class Shape must override method \'makeAStep\'");
+		throw new Error('makeAStep must be implemented by subclass!');
 	},
-	// interface method
+	/**
+	 * @abstract
+	 * Rotate shape
+	 */
 	rotate: function(){
-		console.log("Class that inherited from class Shape must override method \'rotate\'");
+		throw new Error('rotate must be implemented by subclass!');
 	},
-	// interface method
+	/**
+	 * @abstract
+	 * Draw shape
+	 */
 	draw: function(){
-		console.log("Class that inherited from class Shape must override method \'draw\'");
+		throw new Error('draw must be implemented by subclass!');
+	},
+	/**
+	* @abstract
+	* Checks for collision with right border of the canvas
+	* @param {Integer} canvasWidth - width of the canvas
+	* @returns {boolean} true if there is a collision, false otherwise
+	*/
+	checkForRightCanvasSideCollision: function(canvasWidth){
+		throw new Error('checkForRightCanvasSideCollision must be implemented by subclass!');
+	},
+	/**
+	* @abstract
+	* Checks for collision with left border of the canvas
+	* @returns {boolean} true if there is a collision, false otherwise
+	*/
+	checkForLeftCanvasSideCollision: function(){
+		throw new Error('checkForLeftCanvasSideCollision must be implemented by subclass!');
+	},
+	/**
+	* @abstract
+	* Checks for collision with bottom border of the canvas
+	* @param {Integer} canvasHeight - height of the canvas
+	* @returns {boolean} true if there is a collision, false otherwise
+	*/
+	checkForBottomCanvasSideCollision: function(canvasHeight){
+		throw new Error('checkForBottomCanvasSideCollision must be implemented by subclass!');
+	},
+	/**
+	* @abstract
+	* Checks for collision with top border of the canvas
+	* @returns {boolean} true if there is a collision, false otherwise
+	*/
+	checkForTopCanvasSideCollision: function(){
+		throw new Error('checkForTopCanvasSideCollision must be implemented by subclass!');
 	},
 	
 	/**
@@ -47,40 +90,6 @@ Shape.prototype = {
 		if(collisionCount + collisionCount2 == 0 || collisionCount + collisionCount2 == 1 && !sideCollision){
 			this.makeAStep();
 		}
-	},
-	/**
-	* Checks for collision with right border of the canvas
-	* @param {Integer} canvasWidth - width of the canvas
-	* @returns {boolean} true if there is a collision, false otherwise
-	*/
-	checkForRightCanvasSideCollision: function(canvasWidth){
-		console.log("Class that inherited from class Shape must override method \'checkForRightCanvasSideCollision\'");
-		return false;
-	},
-	/**
-	* Checks for collision with left border of the canvas
-	* @returns {boolean} true if there is a collision, false otherwise
-	*/
-	checkForLeftCanvasSideCollision: function(){
-		console.log("Class that inherited from class Shape must override method \'checkForLeftCanvasSideCollision\'");
-		return false;
-	},
-	/**
-	* Checks for collision with bottom border of the canvas
-	* @param {Integer} canvasHeight - height of the canvas
-	* @returns {boolean} true if there is a collision, false otherwise
-	*/
-	checkForBottomCanvasSideCollision: function(canvasHeight){
-		console.log("Class that inherited from class Shape must override method \'checkForBottomCanvasSideCollision\'");
-		return false;
-	},
-	/**
-	* Checks for collision with top border of the canvas
-	* @returns {boolean} true if there is a collision, false otherwise
-	*/
-	checkForTopCanvasSideCollision: function(){
-		console.log("Class that inherited from class Shape must override method \'checkForTopCanvasSideCollision\'");
-		return false;
 	},
 	
 	
@@ -252,12 +261,13 @@ Shape.prototype = {
 	*/
 	reactToCollision: function(object2){
 		// swap movement angles between shapes
+		this.vector = new Point(this.point.x - object2.point.x, this.point.y - object.point.y);
 		var thisAngle = this.movementAngle;
 		this.movementAngle = object2.movementAngle;
 		object2.movementAngle = thisAngle;
 		// step away to avoid dragging
 		this.makeAStep();
-		object2.makeAStep();
+		//object2.makeAStep();
 		// change rotation angle to opposite
 		this.rotationStep = - this.rotationStep;
 		object2.rotationStep = - object2.rotationStep;
@@ -392,8 +402,25 @@ var isThereAGapBetweenShapes = function(shape1, shape2){
 			circle = shape2;
 			polygon = shape1;
 		}
-		var axis = (new Side(polygon.point, circle.point)).toVector();
+		
+		
 		var points = polygon.getPoints();
+		var point;
+		var closestPoint;
+		var dist;
+		var currentDist;
+		// find the closest point
+		for(var p in points) {
+			point = points[p];
+			currentDist = (circle.point.x - point.x) * (circle.point.x - point.x) + (circle.point.y - point.y) * (circle.point.y - point.y);
+			if (dist == null || currentDist < dist) {
+				dist = currentDist;
+				closestPoint = point;
+			}
+			
+		}
+		
+		var axis = new Point( closestPoint.x-circle.point.x, closestPoint.y-circle.point.y);
 		var polygonProjection = projectPointsOntoAxis(polygon, axis);
 		var circleProjection = projectPointsOntoAxis(circle, axis);
 		return !checkIfProjectionsOverlap(circleProjection, polygonProjection);
