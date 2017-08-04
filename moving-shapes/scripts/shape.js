@@ -8,9 +8,10 @@ function Shape(x, y, color){
 	// angle by which this shape is rotated
 	this.rotationAngle = (parseInt(Math.random()*1000))%360;
 	// Size of movement step in one frame
-	this.stepSize = 1;
+	this.stepSize = 2;
 	// Vector of the movement for this shape.
 	this.movementVector = new Point( (parseInt(Math.random()*10))%7 - 3, (parseInt(Math.random()*10))%7 - 3 );
+	this.movementVector.normailze();
 };
 Shape.prototype = {
     constructor: Shape,
@@ -133,14 +134,14 @@ Shape.prototype = {
 	* @returns {Integer}
 	*/
 	getXStep: function(){
-		return (findVectorLength(new Point(0,0), this.movementVector) / this.movementVector.x) * this.stepSize;
+		return (findVectorLength(new Point(0,0), this.movementVector) / this.movementVector.x) % this.stepSize;
 	},
 	/**
 	* Computes step on y-axis
 	* @returns {Integer}
 	*/
 	getYStep: function(){
-		return (findVectorLength(new Point(0,0), this.movementVector) / this.movementVector.y) * this.stepSize;
+		return (findVectorLength(new Point(0,0), this.movementVector) / this.movementVector.y) % this.stepSize;
 	},
 	/**
 	* Filter array of shapes and return only those that definitely need checking
@@ -278,6 +279,7 @@ Shape.prototype = {
 	reactToStaticCollision: function(object2){
 		// reflect movement angle of this shape
 		this.movementVector = new Point(this.point.x - object2.point.x, this.point.y - object2.point.y);
+		this.movementVector.normailze();
 		// step away to avoid dragging
 		//this.makeAStep();
 		// change rotation angle to opposite
@@ -328,6 +330,12 @@ Point.prototype = {
 	move: function(x, y){
 		this.x += x;
 		this.y += y;
+	},
+	
+	normailze: function(){
+		len_v = Math.sqrt(this.x*this.x + this.y*this.y);
+		this.x /= len_v;
+		this.y /= len_v; 
 	}
 };
 /**

@@ -7,8 +7,8 @@ var canvasWidth = 0;
 // height of the canvas
 var canvasHeight = 0;
 // size of figures' cells
-var cellWidth = 100;
-var cellHeight = 100;
+var cellWidth = 150;
+var cellHeight = 150;
 
 var Animation = new function(){
 	// size of the frame
@@ -109,10 +109,10 @@ var Animation = new function(){
 				
 				if(shape != null){
 					rand = parseInt(Math.random()*10);
-					if(rand%3 == 1 && showMovingShapes){
-						movingShapes.push(shape);
-					}else if(showStaticShapes){
+					if(rand%9 == 1 && showStaticShapes){
 						staticShapes.push(shape);
+					}else if(showMovingShapes){
+						movingShapes.push(shape);
 					}
 				}
 			}

@@ -6,7 +6,7 @@ Animation.setColorsArray(["#EF6C00", "#2E7D32", "#0277BD"]);
 Animation.setFrameSize(15);
 Animation.setShowMovingShapes(true);
 Animation.setShowStaticShapes(true);
-Animation.setShowTriangles(false);
+Animation.setShowTriangles(true);
 Animation.setShowRectangles(true);
 Animation.setShowCircles(true);
 // start moving shapes
