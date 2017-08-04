@@ -7,7 +7,7 @@ Animation.setFrameSize(15);
 Animation.setShowMovingShapes(true);
 Animation.setShowStaticShapes(true);
 Animation.setShowTriangles(false);
-Animation.setShowRectangles(false);
+Animation.setShowRectangles(true);
 Animation.setShowCircles(true);
 // start moving shapes
 Animation.startMoving();

@@ -9,8 +9,8 @@ function Shape(x, y, color){
 	this.rotationAngle = (parseInt(Math.random()*1000))%360;
 	// Size of movement step in one frame
 	this.stepSize = 1;
-	// Angle of the movement for this shape.
-	this.movementAngle = (parseInt(Math.random()*1000))%360;
+	// Vector of the movement for this shape.
+	this.movementVector = new Point( (parseInt(Math.random()*10))%7 - 3, (parseInt(Math.random()*10))%7 - 3 );
 };
 Shape.prototype = {
     constructor: Shape,
@@ -133,14 +133,14 @@ Shape.prototype = {
 	* @returns {Integer}
 	*/
 	getXStep: function(){
-		return Math.cos(this.degreesToRadians(this.movementAngle)) * this.stepSize;
+		return (findVectorLength(new Point(0,0), this.movementVector) / this.movementVector.x) * this.stepSize;
 	},
 	/**
 	* Computes step on y-axis
 	* @returns {Integer}
 	*/
 	getYStep: function(){
-		return Math.sin(this.degreesToRadians(this.movementAngle)) * this.stepSize;
+		return (findVectorLength(new Point(0,0), this.movementVector) / this.movementVector.y) * this.stepSize;
 	},
 	/**
 	* Filter array of shapes and return only those that definitely need checking
@@ -261,10 +261,9 @@ Shape.prototype = {
 	*/
 	reactToCollision: function(object2){
 		// swap movement angles between shapes
-		this.vector = new Point(this.point.x - object2.point.x, this.point.y - object.point.y);
-		var thisAngle = this.movementAngle;
-		this.movementAngle = object2.movementAngle;
-		object2.movementAngle = thisAngle;
+		var movementVector = this.movementVector;
+		this.movementVector = object2.movementVector;
+		object2.movementVector = movementVector;
 		// step away to avoid dragging
 		this.makeAStep();
 		//object2.makeAStep();
@@ -277,8 +276,8 @@ Shape.prototype = {
 	* @param {Shape} object2 - another shape that this chape collided with
 	*/
 	reactToStaticCollision: function(object2){
-		// reflect movementAngle of this shape
-		this.movementAngle = -this.movementAngle;
+		// reflect movement angle of this shape
+		this.movementVector = new Point(this.point.x - object2.point.x, this.point.y - object2.point.y);
 		// step away to avoid dragging
 		//this.makeAStep();
 		// change rotation angle to opposite
@@ -293,32 +292,16 @@ Shape.prototype = {
 	onCollision: function(side){
 		switch(side){
 			case this.RIGHT:
-				if(this.movementAngle < 90){
-					this.movementAngle = 180 - this.movementAngle;
-				}else{
-					this.movementAngle = 180 - this.movementAngle;
-				}
+				this.movementVector.x = -this.movementVector.x;
 				break;
 			case this.LEFT:
-				if(this.movementAngle < 180){
-					this.movementAngle = 180 - this.movementAngle;
-				}else{
-					this.movementAngle = 180 - this.movementAngle;
-				}
+				this.movementVector.x = -this.movementVector.x;
 				break;
 			case this.BOTTOM:
-				if(this.movementAngle < 90){
-					this.movementAngle = 360 - this.movementAngle;
-				}else{
-					this.movementAngle = 360 - this.movementAngle;
-				}
+				this.movementVector.y = -this.movementVector.y;
 				break;
 			case this.TOP:
-				if(this.movementAngle > 270){
-					this.movementAngle = 360 - this.movementAngle;
-				}else{
-					this.movementAngle = 360 - this.movementAngle;
-				}
+				this.movementVector.y = -this.movementVector.y;
 				break;
 			default:
 				console.log("Shape.onCollision: Wrong side");
